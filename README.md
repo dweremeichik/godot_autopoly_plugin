@@ -12,6 +12,8 @@ You may either install through the Godot Asset Library, or you can download a zi
 
 ## How to use
 
+![demonstration](https://github.com/dweremeichik/godot_autopoly_plugin/raw/main/asset_lib/auto_poly_plugin_preview.gif)
+
 To use this plugin simply enable it, you can find the official instructions [here](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#enabling-a-plugin).
 When you add or remove a vertex (internal or external) in the Polygon2D UV Editor, your internal polygons will be automatically triangulated for you.
 
