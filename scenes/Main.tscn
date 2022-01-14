@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+
+[node name="Main" type="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2( 155, 109 )
+texture = ExtResource( 1 )
+polygon = PoolVector2Array( 64, 0, 64, 64, 0, 64, 0, 0, 63, 0, 34.3701, 15.7076, 25.5054, 43.5459, 55.832, 34.2146, 6.37636, 34.2146 )
+uv = PoolVector2Array( 64, 0, 64, 64, 0, 64, 0, 0, 63, 0, 34.3701, 15.7076, 25.5054, 43.5459, 55.832, 34.2146, 6.37636, 34.2146 )
+polygons = [ [ 4, 3, 5 ], [ 2, 1, 6 ], [ 1, 0, 7 ], [ 0, 4, 7 ], [ 4, 5, 7 ], [ 5, 6, 7 ], [ 6, 1, 7 ], [ 3, 2, 8 ], [ 2, 6, 8 ], [ 5, 3, 8 ], [ 6, 5, 8 ] ]
+internal_vertex_count = 4
