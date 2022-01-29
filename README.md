@@ -8,7 +8,7 @@ It is designed to make 2D mesh deformation significantly faster and less painful
 ## How to install
 
 Official installation instructions may be found [here](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html#installing-a-plugin).
-You may either install through the Godot Asset Library, or you can download a zip file directly from GitHub.
+You may either install through the [Godot Asset Library](http://godotengine.org/asset-library/asset/1174), or you can download a zip file directly from GitHub.
 
 ## How to use
 
