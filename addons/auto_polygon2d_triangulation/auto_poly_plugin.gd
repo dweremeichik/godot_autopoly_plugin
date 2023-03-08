@@ -34,7 +34,6 @@ func _on_selection_changed() -> void:
 		current_polygon_count = 0
 
 func triangulate_polygons(polygon2d : Polygon2D) -> void:
-	print("triangulate_polygons")
 	if polygon2d.polygon.size() < 3:
 		# Can't triangulate without a triangle...
 		return
