@@ -6,17 +6,18 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
 [application]
 
 config/name="Auto Polygon2D Triangulation"
 config/description="Project for testing the Auto Polygon2D Triangulation plugin."
 run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.0")
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/auto_polygon2d_triangulation/plugin.cfg" )
+enabled=PackedStringArray("res://addons/auto_polygon2d_triangulation/plugin.cfg")
 
 [physics]
 
