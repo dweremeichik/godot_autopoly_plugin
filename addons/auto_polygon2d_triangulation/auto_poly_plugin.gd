@@ -1,14 +1,14 @@
 @tool
 extends EditorPlugin
 
-var editor_selection := get_editor_interface().get_selection()
 var selected_polygon2d : Polygon2D = null
 var previous_points : PackedVector2Array
 
+var _polygon_2d_editor_panels : Array[Panel] = []
+
 
 func _enter_tree() -> void:
-	editor_selection.selection_changed.connect(self._on_selection_changed)
-	_on_selection_changed()
+	_polygon_2d_editor_panels = _get_polygon_2d_editor_panels()	
 
 
 func _process(_delta: float) -> void:
@@ -16,33 +16,18 @@ func _process(_delta: float) -> void:
 		return
 	if selected_polygon2d.polygon != previous_points:
 		triangulate_polygons(selected_polygon2d)
-	previous_points = selected_polygon2d.polygon.duplicate()
+		# queue the editor for redraw
+		_queue_redraw_panels(_polygon_2d_editor_panels)
+		
+		previous_points = selected_polygon2d.polygon.duplicate()
 
 
-func _exit_tree() -> void:
-	editor_selection.selection_changed.disconnect(self._on_selection_changed)
-
-
-func _on_selection_changed() -> void:
-	var selected_nodes := editor_selection.get_selected_nodes()
-
-	if not selected_nodes.is_empty() and selected_nodes[0] is Polygon2D:
-		selected_polygon2d = selected_nodes[0]
-		triangulate_polygons(selected_polygon2d)
-	else:
-		selected_polygon2d = null
-
-
-func _points_are_inside_polygon(a: Vector2, b: Vector2, c: Vector2, polygon: PackedVector2Array) -> bool:
-	var center = (a + b + c) / 3
-	# move points inside the triangle so we don't check for intersection with polygon edge
-	a = a - (a - center).normalized() * 0.01
-	b = b - (b - center).normalized() * 0.01
-	c = c - (c - center).normalized() * 0.01
-	
-	return Geometry2D.is_point_in_polygon(a, polygon) \
-		and Geometry2D.is_point_in_polygon(b, polygon) \
-		and Geometry2D.is_point_in_polygon(c, polygon)
+func _handles(object: Object) -> bool:
+	if object is Polygon2D:
+		selected_polygon2d = object
+		return true
+	selected_polygon2d = null
+	return false
 
 
 func triangulate_polygons(polygon2d : Polygon2D) -> void:
@@ -68,3 +53,31 @@ func triangulate_polygons(polygon2d : Polygon2D) -> void:
 		if _points_are_inside_polygon(a, b, c, outer_polygon):
 			polygon2d.polygons.push_back(triangle)
 
+
+# Find the Panels associated with the Polygon2DEditor node.
+func _get_polygon_2d_editor_panels() -> Array[Panel] :
+	var panels : Array[Panel] = []
+	# Find the editor
+	for child in get_editor_interface().get_base_control().find_children("*","Polygon2DEditor", true, false):
+		# Find the "uv_edit_draw" panel https://github.com/godotengine/godot/blob/2a0aef5f0912b60f85c9e150cc0bfbeab7de6e40/editor/plugins/polygon_2d_editor_plugin.cpp#L1348
+		# Note that this finds multiple panels as all of these nodes are nameless..
+		panels.append_array(child.find_children("*", "Panel", true, false))
+	return panels
+
+
+func _queue_redraw_panels(panels: Array[Panel]) -> void:
+	for panel in panels:
+		if panel.is_visible_in_tree():
+			panel.queue_redraw()
+
+
+func _points_are_inside_polygon(a: Vector2, b: Vector2, c: Vector2, polygon: PackedVector2Array) -> bool:
+	var center = (a + b + c) / 3
+	# move points inside the triangle so we don't check for intersection with polygon edge
+	a = a - (a - center).normalized() * 0.01
+	b = b - (b - center).normalized() * 0.01
+	c = c - (c - center).normalized() * 0.01
+	
+	return Geometry2D.is_point_in_polygon(a, polygon) \
+		and Geometry2D.is_point_in_polygon(b, polygon) \
+		and Geometry2D.is_point_in_polygon(c, polygon)
