@@ -36,22 +36,33 @@ func triangulate_polygons(polygon2d : Polygon2D) -> void:
 		return
 
 	polygon2d.polygons = []
+	var outer_vertex_count := polygon2d.polygon.size() - polygon2d.internal_vertex_count
+	print("outer vertex count %s" % outer_vertex_count)
 	var points = Geometry2D.triangulate_delaunay(polygon2d.polygon)
 	# Outer verticies are stored at the beginning of the PackedVector2Array
-	var outer_polygon = polygon2d.polygon.slice(0, polygon2d.polygon.size() - polygon2d.internal_vertex_count)
+	var outer_polygon = polygon2d.polygon.slice(0, outer_vertex_count)
+	print(points)
 	for point in range(0, points.size(), 3):
-		var triangle = []
-		triangle.push_back(points[point])
-		triangle.push_back(points[point + 1])
-		triangle.push_back(points[point + 2])
-		
+		var i = points[point]
+		var j = points[point + 1]
+		var k = points[point + 2]
+
 		# only add the triangle if all points are inside the polygon
-		var a : Vector2 = polygon2d.polygon[points[point]]
-		var b : Vector2 = polygon2d.polygon[points[point + 1]]
-		var c : Vector2 = polygon2d.polygon[points[point + 2]]
+		var a : Vector2 = polygon2d.polygon[i]
+		var b : Vector2 = polygon2d.polygon[j]
+		var c : Vector2 = polygon2d.polygon[k]
 		
-		if _points_are_inside_polygon(a, b, c, outer_polygon):
-			polygon2d.polygons.push_back(triangle)
+		if	i >= outer_vertex_count and !Geometry2D.is_point_in_polygon(a, outer_polygon):
+			print("polygon2d %s index %s %s outside of polygon" % [polygon2d, i, a])
+			return
+		elif j >= outer_vertex_count and !Geometry2D.is_point_in_polygon(b, outer_polygon):
+			print("polygon2d %s index %s %s outside of polygon" % [polygon2d, j, b])
+			return
+		elif k >= outer_vertex_count and !Geometry2D.is_point_in_polygon(c, outer_polygon):
+			print("polygon2d %s index %s %s outside of polygon" % [polygon2d, k, c])
+			return
+		
+		polygon2d.polygons.push_back([i, j, k])
 
 
 # Find the Panels associated with the Polygon2DEditor node.
